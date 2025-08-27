@@ -26,4 +26,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == '/tasks')
         $id = $parts[2];
         TaskController::delete($id);
     }
+} else if ($_SERVER['REQUEST_METHOD'] == 'PATCH') {
+    $parts = explode('/', $_SERVER['REQUEST_URI']);
+    if ($parts[1] === 'tasks' && isset($parts[2], $parts[3]) && $parts[3] === 'done') {
+        $id = $parts[2];
+        TaskController::markAsDone($id);
+    } else if ($parts[1] === 'tasks' && isset($parts[2], $parts[3]) && $parts[3] === 'undone') {
+        $id = $parts[2];
+        TaskController::markAsUndone($id);
+    }
+} else {
+    http_response_code(404);
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Rota não encontrada']);
 }
+

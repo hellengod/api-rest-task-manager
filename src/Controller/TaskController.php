@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 use App\Storage\Database;
+use Exception;
 class TaskController
 {
 
@@ -32,7 +33,7 @@ class TaskController
             $stmt->execute();
             http_response_code(201);
             echo json_encode(['message' => 'Tarefa criada com sucesso!']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['message' => 'Erro interno no servidor']);
             return;
@@ -49,7 +50,7 @@ class TaskController
             $tasks = json_encode($tasks);
             header('Content-Type: application/json');
             echo $tasks;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['message' => 'Erro interno no servidor']);
             return;
@@ -74,7 +75,7 @@ class TaskController
             $task = json_encode($task);
             header('Content-Type: application/json');
             echo $task;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['message' => 'Erro interno no servidor']);
             return;
@@ -112,7 +113,7 @@ class TaskController
 
             http_response_code(200);
             echo json_encode(['message' => 'Tarefa atualizada com sucesso!']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['message' => 'Erro interno no servidor']);
             return;
@@ -135,10 +136,57 @@ class TaskController
 
             http_response_code(200);
             echo json_encode(['message' => 'Tarefa deletada com sucesso!']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['message' => 'Erro interno no servidor']);
             return;
         }
+    }
+
+    public static function markAsDone($id)
+    {
+
+        try {
+            $conn = Database::connect();
+            $stmt = $conn->prepare('UPDATE tasks SET is_done = 1 WHERE id = :id');
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            if ($stmt->rowCount() === 0) {
+                http_response_code(404);
+                echo json_encode(['message' => 'Tarefa não encontrada']);
+                return;
+            }
+            http_response_code(200);
+            echo json_encode(['message' => 'Tarefa marcada como feita com sucesso!']);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['message' => 'Erro interno no servidor']);
+            return;
+        }
+
+    }
+
+    public static function markAsUndone($id)
+    {
+        try {
+            $conn = Database::connect();
+            $stmt = $conn->prepare('UPDATE tasks SET is_done = 0 WHERE id = :id');
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            if ($stmt->rowCount() === 0) {
+                http_response_code(404);
+                echo json_encode(['message' => 'Tarefa não encontrada']);
+                return;
+            }
+            http_response_code(200);
+            echo json_encode(['message' => 'Tarefa marcada como nao feita com sucesso!']);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['message' => 'Erro interno no servidor']);
+            return;
+        }
+
     }
 }
