@@ -29,4 +29,15 @@ class TaskController
         header('Content-Type: application/json');
         echo $tasks;
     }
+
+    public static function getTaskById($id){
+        $conn = Database::connect();
+        $stmt = $conn->prepare('SELECT * FROM tasks WHERE id = :id');
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        $task = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $task = json_encode($task);
+        header('Content-Type: application/json');
+        echo $task;
+    }
 }
