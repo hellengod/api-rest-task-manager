@@ -1,0 +1,17 @@
+{
+    "name": "hellenbianchini/api-php",
+    "description": "estudando api",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Hellen Bianchini",
+            "email": "hellenbiangod@gmail.com"
+        }
+    ],
+    "require": {}
+}
