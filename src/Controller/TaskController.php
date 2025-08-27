@@ -20,7 +20,8 @@ class TaskController
 
     }
 
-    public static function get(){
+    public static function get()
+    {
         $conn = Database::connect();
         $stmt = $conn->prepare('SELECT * FROM tasks');
         $stmt->execute();
@@ -30,7 +31,8 @@ class TaskController
         echo $tasks;
     }
 
-    public static function getTaskById($id){
+    public static function getTaskById($id)
+    {
         $conn = Database::connect();
         $stmt = $conn->prepare('SELECT * FROM tasks WHERE id = :id');
         $stmt->bindParam(':id', $id);
@@ -39,5 +41,29 @@ class TaskController
         $task = json_encode($task);
         header('Content-Type: application/json');
         echo $task;
+    }
+
+    public static function update($id)
+    {
+        $body = file_get_contents('php://input');
+        $data = json_decode($body, true);
+        $conn = Database::connect();
+        $stmt = $conn->prepare('UPDATE tasks SET title = :title, description = :description WHERE id = :id');
+        $stmt->bindParam(':title', $data['title']);
+        $stmt->bindParam(':description', $data['description']);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        http_response_code(200);
+        echo json_encode(['message' => 'Tarefa atualizada com sucesso!']);
+    }
+
+    public static function delete($id){
+        $conn = Database::connect();
+        $stmt = $conn->prepare('DELETE FROM tasks WHERE id = :id');
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        http_response_code(200);
+        echo json_encode(['message' => 'Tarefa deletada com sucesso!']);
+
     }
 }
