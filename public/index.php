@@ -6,8 +6,8 @@ use App\Controller\TaskController;
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == '/tasks') {
     TaskController::create();
 } else if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $parts = explode('/', $_SERVER['REQUEST_URI']);
-
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $parts = explode('/', $path);
     if ($parts[1] === 'tasks' && !isset($parts[2])) {
         TaskController::get();
     } elseif ($parts[1] === 'tasks' && isset($parts[2])) {
@@ -15,19 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == '/tasks')
         TaskController::getTaskById($id);
     }
 } else if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
-    $parts = explode('/', $_SERVER['REQUEST_URI']);
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $parts = explode('/', $path);
     if ($parts[1] === 'tasks' && isset($parts[2])) {
         $id = $parts[2];
         TaskController::update($id);
     }
 } else if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
-    $parts = explode('/', $_SERVER['REQUEST_URI']);
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $parts = explode('/', $path);
     if ($parts[1] === 'tasks' && isset($parts[2])) {
         $id = $parts[2];
         TaskController::delete($id);
     }
 } else if ($_SERVER['REQUEST_METHOD'] == 'PATCH') {
-    $parts = explode('/', $_SERVER['REQUEST_URI']);
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $parts = explode('/', $path);
     if ($parts[1] === 'tasks' && isset($parts[2], $parts[3]) && $parts[3] === 'done') {
         $id = $parts[2];
         TaskController::markAsDone($id);
